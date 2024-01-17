@@ -1,5 +1,5 @@
 {
-  "node_type_id": "i3.xlarge",
+  "instance_pool_id": "0117-155010-pates171-pool-cn3zn09e",
   "aws_attributes": {
     "first_on_demand": 1,
     "availability": "SPOT_WITH_FALLBACK",

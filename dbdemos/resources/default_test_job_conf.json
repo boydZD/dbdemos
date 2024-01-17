@@ -20,17 +20,17 @@
         "spark_conf": {
           "spark.databricks.dataLineage.enabled": "true"
         },
-        "instance_pool_id": "1025-140806-yup112-pool-yz565bma",
-        "data_security_mode": "NONE",
+        "instance_pool_id": "0117-155010-pates171-pool-cn3zn09e",
+        "data_security_mode": "SINGLE_USER",
         "runtime_engine": "STANDARD",
         "num_workers": 1
       }
     }
   ],
   "git_source": {
-    "git_url": "https://github.com/databricks/field-demo",
+    "git_url": "https://github.com/boydZD/field-demo",
     "git_provider": "gitHub",
-    "git_branch": "master"
+    "git_branch": "jpmc-dev-stable2"
   },
   "format": "MULTI_TASK"
 }

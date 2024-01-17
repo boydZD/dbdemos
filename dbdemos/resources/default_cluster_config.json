@@ -5,6 +5,8 @@
   },
   "cluster_name": "dbdemos-{{DEMO_NAME}}-{{CURRENT_USER_NAME}}",
   "spark_version": "12.2.x-cpu-ml-scala2.12",
+  "data_security_mode": "SINGLE_USER",
+  "runtime_engine": "STANDARD",
   "spark_conf": {
     "spark.databricks.dataLineage.enabled": "true"
   },
@@ -14,7 +16,7 @@
     "demo": "{{DEMO_NAME}}"
   },
   "spark_env_vars": {},
-  "autotermination_minutes": 60,
+  "autotermination_minutes": 30,
   "clus4ter_source": "UI",
   "init_scripts": [],
   "runtime_engine": "STANDARD"

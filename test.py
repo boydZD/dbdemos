@@ -41,7 +41,7 @@ def df_to_parquet(df, target_dir, chunk_size=1000000, **parquet_wargs):
         slc.to_parquet(fname, engine="pyarrow", **parquet_wargs)
 
 if __name__ == "__main__":
-    source_folder = "/Users/quentin.ambard/Downloads/landing_zone"
-    destination_folder = "/Users/quentin.ambard/Downloads/landing_zone_parquet"
+    source_folder = "/Users/justin.boyd/Downloads/landing_zone"
+    destination_folder = "/Users/justin.boyd/Downloads/landing_zone_parquet"
 
     read_and_save_csv_files(source_folder, destination_folder)

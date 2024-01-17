@@ -1,4 +1,6 @@
 {
+  "data_security_mode": "SINGLE_USER",
+  "runtime_engine": "STANDARD",
   "spark_version": "12.2.x-cpu-ml-scala2.12",
   "spark_conf": {
     "spark.databricks.dataLineage.enabled": "true"

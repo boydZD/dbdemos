@@ -45,22 +45,22 @@ conf = load_conf("local_conf.json")
 #This will create the bundle and save it in the local ./bundles and ./minisite folder.
 #change the path with your demo path in the https://github.com/databricks/field-demo repo (your fork)
 try:
-    bundle(conf, "product_demos/DBSQL-Datawarehousing/sql-ai-functions")
+    bundle(conf, "product_demos/Data-Science/mlops-end2end")
 except Exception as e:
     print(f"Failure building the job: {e}")
 
 # Now that your demo is packaged, we can install it & test.
 # We recommend testing in a new workspace so that you have a fresh install
 # Load the conf for the workspace where you want to install the demo:
-conf = load_conf("local_conf_E2FE.json")
+conf = load_conf("local_conf.json")
 
 import dbdemos
 try:
     #Install your demo in a given folder:
-    dbdemos.install("sql-ai-functions", "/Users/quentin.ambard@databricks.com/test_install_quentin", True, conf.username,
+    dbdemos.install("mlops-end2end", "/Users/justin.boyd@databricks.com/test_install_jb", True, conf.username,
                     conf.pat_token, conf.workspace_url, cloud="AWS", start_cluster = False)
     #Check if the init job is successful:
-    dbdemos.check_status("sql-ai-functions", conf.username, conf.pat_token, conf.workspace_url, cloud="AWS")
+    dbdemos.check_status("mlops-end2end", conf.username, conf.pat_token, conf.workspace_url, cloud="AWS")
     print("looking good! Ready to send your PR with your new demo!")
 except Exception as e:
     print(f"Failure  installing the demo: {e}")

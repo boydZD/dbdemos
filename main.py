@@ -24,7 +24,7 @@ load_dashboard.logger.setLevel(logging.DEBUG)
 def bundle():
     bundler = JobBundler(conf)
     # the bundler will use a stating repo dir in the workspace to analyze & run content.
-    bundler.reset_staging_repo(skip_pull=False, )
+    bundler.reset_staging_repo(skip_pull=True)
     # Discover bundles from repo:
     #bundler.load_bundles_conf()
     # Or manually add bundle to run faster:
@@ -35,44 +35,44 @@ def bundle():
     #bundler.add_bundle("product_demos/Data-Science/computer-vision-dl")
     #bundler.add_bundle("product_demos/Unity-Catalog/04-system-tables")
     #bundler.add_bundle("demo-retail/lakehouse-retail-c360")
-    bundler.add_bundle("product_demos/Data-Science/chatbot-rag-llm")
+    #bundler.add_bundle("product_demos/Data-Science/chatbot-rag-llm")
     #bundler.add_bundle("product_demos/Unity-Catalog/04-system-tables")
     #bundler.add_bundle("demo-retail/lakehouse-retail-c360")
     #bundler.add_bundle("demo-manufacturing/lakehouse-iot-platform")
-    """0
-    lakehouse-patient-readmission
-    bundler.add_bundle("product_demos/Unity-Catalog/05-Upgrade-to-UC")
-    bundler.add_bundle("product_demos/Unity-Catalog/02-External-location")
-    #bundler.add_bundle("product_demos/Unity-Catalog/04-Audit-log")
-    bundler.add_bundle("product_demos/Data-Science/computer-vision-dl")
-    bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-loans")
-    bundler.add_bundle("demo-manufacturing/lakehouse-iot-platform")
-    bundler.add_bundle("demo-retail/lakehouse-retail-c360")
-    bundler.add_bundle("product_demos/Unity-Catalog/02-External-location")
-    bundler.add_bundle("product_demos/Unity-Catalog/03-Data-lineage")
+#     """0
+#     lakehouse-patient-readmission
+#     bundler.add_bundle("product_demos/Unity-Catalog/05-Upgrade-to-UC")
+#     bundler.add_bundle("product_demos/Unity-Catalog/02-External-location")
+#     #bundler.add_bundle("product_demos/Unity-Catalog/04-Audit-log")
+#     bundler.add_bundle("product_demos/Data-Science/computer-vision-dl")
+#     bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-loans")
+#     bundler.add_bundle("demo-manufacturing/lakehouse-iot-platform")
+#     bundler.add_bundle("demo-retail/lakehouse-retail-c360")
+#     bundler.add_bundle("product_demos/Unity-Catalog/02-External-location")
+#     bundler.add_bundle("product_demos/Unity-Catalog/03-Data-lineage")
     
-    bundler.add_bundle("product_demos/DBSQL-Datawarehousing/01-FK-PK-Indentity-Data-modeling")
-    bundler.add_bundle("product_demos/Data-Science/Koalas")
-    bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-Unit-Test")
-    bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-CDC")
-    bundler.add_bundle("product_demos/Auto-Loader (cloudFiles)")
-    bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-loans")
-    bundler.add_bundle("product_demos/Auto-Loader (cloudFiles)")
-    bundler.add_bundle("product_demos/Unity-Catalog/03-Data-lineage")
-    bundler.add_bundle("product_demos/Delta-Lake-CDC-CDF")
-    bundler.add_bundle("product_demos/streaming-sessionization")
-    bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-Unit-Test")
-"""
+#     bundler.add_bundle("product_demos/DBSQL-Datawarehousing/01-FK-PK-Indentity-Data-modeling")
+#     bundler.add_bundle("product_demos/Data-Science/Koalas")
+#     bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-Unit-Test")
+#     bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-CDC")
+#     bundler.add_bundle("product_demos/Auto-Loader (cloudFiles)")
+#     bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-loans")
+#     bundler.add_bundle("product_demos/Auto-Loader (cloudFiles)")
+#     bundler.add_bundle("product_demos/Unity-Catalog/03-Data-lineage")
+#     bundler.add_bundle("product_demos/Delta-Lake-CDC-CDF")
+#     bundler.add_bundle("product_demos/streaming-sessionization")
+#     bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-Unit-Test")
+# """
     #bundler.add_bundle("product_demos/Delta-Lake-CDC-CDF")
     #bundler.add_bundle("product_demos/Delta-Lake")
     #bundler.add_bundle("product_demos/Data-Science/computer-vision-dl")
     #bundler.add_bundle("product_demos/Unity-Catalog/01-Table-ACL")
     #bundler.add_bundle("product_demos/Unity-Catalog/04-system-tables")
-    #bundler.add_bundle("demo-retail/lakehouse-retail-c360")
+    bundler.add_bundle("demo-retail/lakehouse-retail-c360")
     #bundler.add_bundle("product_demos/streaming-sessionization")
     #bundler.add_bundle("product_demos/Unity-Catalog/01-Table-ACL")
     #bundler.add_bundle("demo-manufacturing/lakehouse-iot-platform")
-    #bundler.add_bundle("product_demos/Data-Science/mlops-end2end")
+    bundler.add_bundle("product_demos/Data-Science/mlops-end2end")
     #bundler.add_bundle("demo-FSI/lakehouse-fsi-credit-decisioning")
     #bundler.add_bundle("demo-FSI/lakehouse-fsi-fraud-detection")
     #bundler.add_bundle("product_demos/Delta-Lake")
@@ -95,7 +95,7 @@ def bundle():
 
 
     # Run the jobs (only if there is a new commit since the last time, or failure, or force execution)
-    bundler.start_and_wait_bundle_jobs(force_execution = False, skip_execution=False)
+    bundler.start_and_wait_bundle_jobs(force_execution = False, skip_execution=True)
 
     packager = Packager(conf, bundler)
     packager.package_all()
@@ -118,7 +118,7 @@ def bundle_with_retry(max_retry = 3):
 bundle()
 
 #Loads conf to install on cse2.
-with open("local_conf_E2FE.json", "r") as r:
+with open("local_conf.json", "r") as r:
     c = json.loads(r.read())
 
 from dbdemos.installer import Installer
@@ -132,14 +132,15 @@ import dbdemos
 #dbdemos.install("delta-lake", "/Users/quentin.ambard@databricks.com/test_install_quentin", True, c['username'], c['pat_token'], c['url'], cloud="AWS", start_cluster = True, skip_dashboards=False)
 #dbdemos.install("lakehouse-retail-c360", "/Users/quentin.ambard@databricks.com/test_install_quentin", True, c['username'], c['pat_token'], c['url'], cloud="AWS", start_cluster = False, catalog="quentin", schema="test_c360_uc", skip_dashboards=True)
 #dbdemos.install("uc-04-system-tables", "/Users/quentin.ambard@databricks.com/test_install_quentin", True, c['username'], c['pat_token'], c['url'], catalog='main', schema='quentin_test', cloud="AWS", start_cluster = False)
+
 #installer = Installer()
 #for d in installer.get_demos_available():
 #    dbdemos.install(d, "/Users/quentin.ambard@databricks.com/test_dbdemos", True, c['username'], c['pat_token'], c['url'], cloud="AWS")
 
 
-#dbdemos.list_demos(None)
+dbdemos.list_demos(None)
 
-dbdemos.install("llm-rag-chatbot", "/Users/quentin.ambard@databricks.com/test_install_quentin", True, c['username'], c['pat_token'], c['url'], cloud="AWS", start_cluster = False,  skip_dashboards=True)
+#dbdemos.install("llm-rag-chatbot", "/Users/quentin.ambard@databricks.com/test_install_quentin", True, c['username'], c['pat_token'], c['url'], cloud="AWS", start_cluster = False,  skip_dashboards=True)
 
 #dbdemos.install("sql-ai-functions", "/Users/quentin.ambard@databricks.com/test_install_quentin", True, c['username'], c['pat_token'], c['url'], cloud="AWS", use_current_cluster=False, current_cluster_id=c["current_cluster_id"])
 
