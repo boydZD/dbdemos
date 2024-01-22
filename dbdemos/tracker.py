@@ -3,7 +3,7 @@ import urllib.parse
 
 class Tracker:
     #Set this value to false to disable dbdemo toolkit tracker.
-    enable_tracker = True
+    enable_tracker = False
     URL = "https://ppxrzfxige.execute-api.us-west-2.amazonaws.com/v1/analytics"
 
     def __init__(self, org_id, uid):

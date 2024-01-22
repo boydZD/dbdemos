@@ -9,6 +9,7 @@ setup(
     packages=find_packages(exclude=["tests", "tests.*"]),
     setup_requires=["wheel"],
     include_package_data=True,
+    package_data={"": ["*.txt","*.csv"]},
     install_requires=["requests", "dbsqlclone", "pandas"],
     license_files = ('LICENSE',)
 )

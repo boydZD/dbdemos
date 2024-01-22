@@ -24,7 +24,7 @@ load_dashboard.logger.setLevel(logging.DEBUG)
 def bundle():
     bundler = JobBundler(conf)
     # the bundler will use a stating repo dir in the workspace to analyze & run content.
-    bundler.reset_staging_repo(skip_pull=True)
+    bundler.reset_staging_repo(skip_pull=False)
     # Discover bundles from repo:
     #bundler.load_bundles_conf()
     # Or manually add bundle to run faster:

@@ -71,6 +71,15 @@ class Packager:
             if run['state']['result_state'] != 'SUCCESS':
                 raise Exception(f"last job {self.db.conf.workspace_url}/#job/{demo_conf.job_id}/run/{demo_conf.run_id} failed for demo {demo_conf.name}. Can't package the demo. {run['state']}")
 
+        def download_demo_data(demoData):
+            print(f"downloading dataset {demoData.path}")
+            import requests
+            full_path = demo_conf.get_bundle_path()+"/"+demoData.get_clean_path()
+            Path(full_path[:full_path.rindex("/")]).mkdir(parents=True, exist_ok=True)
+            data = requests.get(demoData.url, allow_redirects=True)
+            with open(full_path, "wb") as f:
+                f.write(data.content)
+
         def download_notebook_html(notebook):
             full_path = demo_conf.get_bundle_path()+"/"+notebook.get_clean_path()+".html"
             Path(full_path[:full_path.rindex("/")]).mkdir(parents=True, exist_ok=True)
@@ -103,6 +112,9 @@ class Packager:
             with open(full_path, "w") as f:
                 f.write(parser.get_html())
             return (requires_global_setup, parser.get_dashboard_ids())
+
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            executor.map(download_demo_data, demo_conf.datasets)
 
         dashboard_ids = []
         with ThreadPoolExecutor(max_workers=3) as executor:

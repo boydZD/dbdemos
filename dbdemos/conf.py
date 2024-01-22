@@ -167,6 +167,28 @@ class DemoNotebook():
 
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__)
+    
+class DemoData():
+    def __init__(self, path: str, description: str, url: str):
+        self.path = path
+        self.description = description
+        self.url = url
+
+    def __repr__(self):
+        return self.path
+
+    def get_folder(self):
+        p = Path(self.get_clean_path())
+        p.parts
+
+    def get_clean_path(self):
+        #Some paths are relatives, like ../../demo-retail/lakehouse-retail/_resources/xxx
+        # DThis function removes it and returns _resources/xxx
+        p = Path(self.path)
+        parent_count = p.parts.count('..')
+        if parent_count > 0:
+            return str(p.relative_to(*p.parts[:parent_count*2-1]))
+        return self.path
 
 class DemoConf():
     def __init__(self, path: str, json_conf: dict, catalog:str = None, schema: str = None):
@@ -194,6 +216,7 @@ class DemoConf():
         self.default_schema = json_conf.get('default_schema', "")
         self.default_catalog = json_conf.get('default_catalog', "")
         self.custom_message = json_conf.get('custom_message', "")
+        self.datasets = []
         assert "bundle" in json_conf and json_conf["bundle"], "This demo isn't flaged for bundle. Please set bunde = True in the config file"
 
         for n in json_conf['notebooks']:
@@ -203,6 +226,10 @@ class DemoConf():
             libraries = n.get('libraries', [])
             self.notebooks.append(DemoNotebook(n['path'], n['title'], n['description'], n['pre_run'], n['publish_on_website'],
                                                add_cluster_setup_cell, params, depends_on_previous, libraries))
+            
+        if "data" in json_conf:
+            for n in json_conf['data']:
+                self.datasets.append(DemoData(n['path'], n['description'],n['url']))
 
     def __repr__(self):
         return self.path + "("+str(self.notebooks)+")"
@@ -240,6 +267,9 @@ class DemoConf():
 
     def get_minisite_path(self):
         return "dbdemos/minisite/"+self.name
+    
+    def get_datasets_to_include(self):
+        return [n for n in self.data]
 
 
 class ConfTemplate:

@@ -172,6 +172,17 @@ class Installer:
             print(e)
             self.report.display_non_premium_warn(Exception(f"DBSQL not available"), str(e))
             return False
+        
+    def install_datasets(self, demo_name:str, install_path:str):
+        demo = self.get_resource(f"bundles/{demo_name}/conf.json")
+        raw_demo = json.loads(demo)
+        if "data" in raw_demo:
+            for d in raw_demo['data']:
+                path = d['path']
+                data = self.get_resource(f"bundles/{demo_name}/install_package/{path}")
+                #self.dbutils.put(f'{install_path}/{path}',data,True)
+                self.dbutils.put(f'/tmp/{demo_name}/{path}',data,True)
+        return []
 
 
     def install_demo(self, demo_name, install_path, overwrite=False, update_cluster_if_exists = True, skip_dashboards = False, start_cluster = True, use_current_cluster = False, debug = False, catalog = None, schema = None):
@@ -205,6 +216,7 @@ class Installer:
         init_job = self.installer_workflow.create_demo_init_job(demo_conf, use_cluster_id, debug)
         all_workflows = workflows if init_job["id"] is None else workflows + [init_job]
         notebooks = self.install_notebooks(demo_name, install_path, demo_conf, cluster_name, cluster_id, pipeline_ids, dashboards, all_workflows, repos, overwrite, use_current_cluster, debug)
+        #datasets = self.install_datasets(demo_name, install_path)
         self.installer_workflow.start_demo_init_job(init_job, debug)
         for pipeline in pipeline_ids:
             if "run_after_creation" in pipeline and pipeline["run_after_creation"]:
