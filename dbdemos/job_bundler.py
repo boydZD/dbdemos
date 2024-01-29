@@ -182,6 +182,7 @@ class JobBundler:
                     job_cluster["new_cluster"]["num_workers"] = 0
             default_job_conf['tasks'] = []
             for i, notebook in enumerate(notebooks_to_run):
+                task_params = json.loads(conf_template.replace_template_key(json.dumps(notebook.parameters)))
                 task = {
                     "task_key": f"bundle_{demo_conf.name}_{i}",
                     "notebook_task": {
@@ -193,7 +194,8 @@ class JobBundler:
                     "job_cluster_key": default_job_conf["job_clusters"][0]["job_cluster_key"],
                     "timeout_seconds": 0,
                     "email_notifications": {}}
-                merge_dict(task["notebook_task"]["base_parameters"], notebook.parameters)
+                #merge_dict(task["notebook_task"]["base_parameters"], notebook.parameters)
+                merge_dict(task["notebook_task"]["base_parameters"], task_params)
                 if notebook.depends_on_previous:
                     task["depends_on"] = [{"task_key": f"bundle_{demo_conf.name}_{i-1}"}]
                 default_job_conf['tasks'].append(task)

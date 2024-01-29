@@ -117,7 +117,7 @@ def help():
                   <div class="code">dbdemos.list_demos(category: str = None)</div>: list all demos available, can filter per category (ex: 'governance').<br/><br/>
                 </li>
                 <li>
-                  <div class="code">dbdemos.install(demo_name: str, path: str = "./", overwrite: bool = False, use_current_cluster = False, username: str = None, pat_token: str = None, workspace_url: str = None, skip_dashboards: bool = False, cloud: str = "AWS", catalog: str = None, schema: str = None)</div>: install the given demo to the given path.<br/><br/>
+                  <div class="code">dbdemos.install(demo_name: str, path: str = "./", overwrite: bool = False, use_current_cluster = True, username: str = None, pat_token: str = None, workspace_url: str = None, skip_dashboards: bool = False, cloud: str = "AWS", catalog: str = None, schema: str = None)</div>: install the given demo to the given path.<br/><br/>
                   <ul>
                   <li>If overwrite is True, dbdemos will delete the given path folder and re-install the notebooks.</li>
                   <li>use_current_cluster = True will not start a new cluster to init the demo but use the current cluster instead. <strong>Set it to True it if you don't have cluster creation permission</strong>.</li>
@@ -235,13 +235,13 @@ def install(demo_name, path = None, overwrite = False, username = None, pat_toke
         except Exception as e:
             print(f"ERROR setting up GCP conf: {e}")
 
-    if not installer.test_premium_pricing():
-        #Force dashboard skip as dbsql isn't available to avoid any error.
-        skip_dashboards = True
+    # if not installer.test_premium_pricing():
+    #     #Force dashboard skip as dbsql isn't available to avoid any error.
+    #     skip_dashboards = True
     installer.install_demo(demo_name, path, overwrite, skip_dashboards = skip_dashboards, start_cluster = start_cluster, use_current_cluster = use_current_cluster, debug = debug, catalog = catalog, schema = schema)
 
 
-def install_all(path = None, overwrite = False, username = None, pat_token = None, workspace_url = None, skip_dashboards = False, cloud = "AWS", start_cluster = None, use_current_cluster = False):
+def install_all(path = None, overwrite = False, username = None, pat_token = None, workspace_url = None, skip_dashboards = False, cloud = "AWS", start_cluster = None, use_current_cluster = True):
     """
     Install all the bundle demos.
     """

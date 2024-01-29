@@ -217,7 +217,7 @@ class DemoConf():
         self.default_catalog = json_conf.get('default_catalog', "")
         self.custom_message = json_conf.get('custom_message', "")
         self.datasets = []
-        assert "bundle" in json_conf and json_conf["bundle"], "This demo isn't flaged for bundle. Please set bunde = True in the config file"
+        assert "bundle" in json_conf and json_conf["bundle"], "This demo isn't flagged for bundle. Please set bundle = True in the config file"
 
         for n in json_conf['notebooks']:
             add_cluster_setup_cell = n.get('add_cluster_setup_cell', False)

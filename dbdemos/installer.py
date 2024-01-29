@@ -185,7 +185,7 @@ class Installer:
         return []
 
 
-    def install_demo(self, demo_name, install_path, overwrite=False, update_cluster_if_exists = True, skip_dashboards = False, start_cluster = True, use_current_cluster = False, debug = False, catalog = None, schema = None):
+    def install_demo(self, demo_name, install_path, overwrite=False, update_cluster_if_exists = True, skip_dashboards = False, start_cluster = True, use_current_cluster = True, debug = False, catalog = None, schema = None):
         # first get the demo conf.
         if install_path is None:
             install_path = self.get_current_folder()

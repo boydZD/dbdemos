@@ -68,11 +68,11 @@ def bundle():
     #bundler.add_bundle("product_demos/Data-Science/computer-vision-dl")
     #bundler.add_bundle("product_demos/Unity-Catalog/01-Table-ACL")
     #bundler.add_bundle("product_demos/Unity-Catalog/04-system-tables")
-    bundler.add_bundle("demo-retail/lakehouse-retail-c360")
+    #bundler.add_bundle("demo-retail/lakehouse-retail-c360")
     #bundler.add_bundle("product_demos/streaming-sessionization")
     #bundler.add_bundle("product_demos/Unity-Catalog/01-Table-ACL")
     #bundler.add_bundle("demo-manufacturing/lakehouse-iot-platform")
-    bundler.add_bundle("product_demos/Data-Science/mlops-end2end")
+    #bundler.add_bundle("product_demos/Data-Science/mlops-end2end")
     #bundler.add_bundle("demo-FSI/lakehouse-fsi-credit-decisioning")
     #bundler.add_bundle("demo-FSI/lakehouse-fsi-fraud-detection")
     #bundler.add_bundle("product_demos/Delta-Lake")
@@ -93,9 +93,18 @@ def bundle():
     #bundler.add_bundle("demo-manufacturing/lakehouse-iot-platform")
     #bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-Unit-Test")
 
+    #custom installer bundle for JADE
+    bundler.add_bundle("product_demos/Auto-Loader (cloudFiles)")
+    bundler.add_bundle("product_demos/Delta-Lake-CDC-CDF")
+    bundler.add_bundle("product_demos/Delta-Lake")
+    bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-CDC")
+
+    #bundler.add_bundle("demo-retail/lakehouse-retail-c360")
+    bundler.add_bundle("product_demos/Data-Science/mlops-end2end")
+
 
     # Run the jobs (only if there is a new commit since the last time, or failure, or force execution)
-    bundler.start_and_wait_bundle_jobs(force_execution = False, skip_execution=True)
+    bundler.start_and_wait_bundle_jobs(force_execution = False, skip_execution=False)
 
     packager = Packager(conf, bundler)
     packager.package_all()

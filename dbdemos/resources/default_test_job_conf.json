@@ -11,7 +11,7 @@
     {
       "job_cluster_key": "field_demo_test",
       "new_cluster": {
-        "spark_version": "12.2.x-cpu-ml-scala2.12",
+        "spark_version": "14.2.x-cpu-ml-scala2.12",
         "custom_tags": {
           "project": "dbdemos",
           "demo_bundle_job": "autoloader",
@@ -32,5 +32,11 @@
     "git_provider": "gitHub",
     "git_branch": "jpmc-dev-stable2"
   },
-  "format": "MULTI_TASK"
+  "format": "MULTI_TASK",
+  "parameters": [
+    {
+      "name": "catalog",
+      "default": "jboyd_demos"
+    }
+  ]
 }
