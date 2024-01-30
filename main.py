@@ -24,7 +24,7 @@ load_dashboard.logger.setLevel(logging.DEBUG)
 def bundle():
     bundler = JobBundler(conf)
     # the bundler will use a stating repo dir in the workspace to analyze & run content.
-    bundler.reset_staging_repo(skip_pull=False)
+    #bundler.reset_staging_repo(skip_pull=True)
     # Discover bundles from repo:
     #bundler.load_bundles_conf()
     # Or manually add bundle to run faster:
@@ -94,10 +94,10 @@ def bundle():
     #bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-Unit-Test")
 
     #custom installer bundle for JADE
-    bundler.add_bundle("product_demos/Auto-Loader (cloudFiles)")
-    bundler.add_bundle("product_demos/Delta-Lake-CDC-CDF")
-    bundler.add_bundle("product_demos/Delta-Lake")
-    bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-CDC")
+    # bundler.add_bundle("product_demos/Auto-Loader (cloudFiles)")
+    # bundler.add_bundle("product_demos/Delta-Lake-CDC-CDF")
+    # bundler.add_bundle("product_demos/Delta-Lake")
+    # bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-CDC")
 
     #bundler.add_bundle("demo-retail/lakehouse-retail-c360")
     bundler.add_bundle("product_demos/Data-Science/mlops-end2end")

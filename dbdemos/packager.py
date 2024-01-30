@@ -64,8 +64,8 @@ class Packager:
 
     def package_demo(self, demo_conf: DemoConf):
         print(f"packaging demo {demo_conf.name} ({demo_conf.path})")
-        if len(demo_conf.get_notebooks_to_publish()) > 0 and not self.jobBundler.staging_reseted:
-            self.jobBundler.reset_staging_repo()
+        # if len(demo_conf.get_notebooks_to_publish()) > 0 and not self.jobBundler.staging_reseted:
+        #     self.jobBundler.reset_staging_repo()
         if len(demo_conf.get_notebooks_to_run()) > 0:
             run = self.db.get("2.1/jobs/runs/get", {"run_id": demo_conf.run_id, "include_history": False})
             if run['state']['result_state'] != 'SUCCESS':
