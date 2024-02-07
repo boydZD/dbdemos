@@ -55,6 +55,7 @@ class InstallerWorkflow:
         cluster_conf = json.loads(conf_template.replace_template_key(cluster_conf))
         cluster_conf_cloud = json.loads(self.installer.get_resource(f"resources/default_cluster_config-{cloud}.json"))
         merge_dict(cluster_conf, cluster_conf_cloud)
+        merge_dict(cluster_conf, self.installer.get_tag_values_from_current_cluster(self.installer.get_required_tags()))
         definition = self.replace_warehouse_id(definition)
         #Use a given interactive cluster, change the job setting accordingly.
         if use_cluster_id is not None:

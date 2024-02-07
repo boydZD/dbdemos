@@ -119,7 +119,7 @@ class JobBundler:
             if demo_conf.job_id is not None:
                 execute = True
                 if not force_execution:
-                    runs = self.db.get("2.1/jobs/runs/list", {"job_id": demo_conf.job_id, 'limit': 2, 'expand_tasks': "true"})
+                    runs = self.db.get("2.1/jobs/runs/list", {"job_id": demo_conf.job_id, 'limit': 1, 'expand_tasks': "true"})
                     #Last run was successful
                     if 'runs' in runs and len(runs['runs']) > 0:
                         run = runs['runs'][0]
@@ -130,6 +130,9 @@ class JobBundler:
                                 print(f"skipping job execution {demo_conf.name} as it was already run and skip_execution=True.")
                             else:
                                 #last run was using the same commit version.
+                                #latestRun = self.db.get("2.1/jobs/runs/get", {"run_id": run['run_id'], "include_history": "true"})
+                                print(f"checking previous job execution vs latest commits for {demo_conf.name} commit {self.head_commit_id}")
+                                #print(json.dumps(latestRun['tasks']))
                                 tasks_with_different_commit = [t for t in run['tasks'] if t['git_source']['git_snapshot']['used_commit'] != self.head_commit_id]
                                 if len(tasks_with_different_commit) == 0:
                                     execute = False

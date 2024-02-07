@@ -104,7 +104,7 @@ def bundle():
 
 
     # Run the jobs (only if there is a new commit since the last time, or failure, or force execution)
-    bundler.start_and_wait_bundle_jobs(force_execution = False, skip_execution=False)
+    bundler.start_and_wait_bundle_jobs(force_execution = False, skip_execution=True)
 
     packager = Packager(conf, bundler)
     packager.package_all()
@@ -127,11 +127,11 @@ def bundle_with_retry(max_retry = 3):
 bundle()
 
 #Loads conf to install on cse2.
-with open("local_conf.json", "r") as r:
-    c = json.loads(r.read())
+# with open("local_conf.json", "r") as r:
+#     c = json.loads(r.read())
 
-from dbdemos.installer import Installer
-import dbdemos
+# from dbdemos.installer import Installer
+# import dbdemos
 
 
 #dbdemos.install_all("/Users/quentin.ambard@databricks.com/test_install_quentin", True, c['username'], c['pat_token'], c['url'], cloud="AWS", start_cluster = False, skip_dashboards = True)
@@ -147,7 +147,7 @@ import dbdemos
 #    dbdemos.install(d, "/Users/quentin.ambard@databricks.com/test_dbdemos", True, c['username'], c['pat_token'], c['url'], cloud="AWS")
 
 
-dbdemos.list_demos(None)
+#dbdemos.list_demos(None)
 
 #dbdemos.install("llm-rag-chatbot", "/Users/quentin.ambard@databricks.com/test_install_quentin", True, c['username'], c['pat_token'], c['url'], cloud="AWS", start_cluster = False,  skip_dashboards=True)
 

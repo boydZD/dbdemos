@@ -11,7 +11,7 @@
     {
       "job_cluster_key": "field_demo_test",
       "new_cluster": {
-        "spark_version": "14.2.x-cpu-ml-scala2.12",
+        "spark_version": "14.3.x-cpu-ml-scala2.12",
         "custom_tags": {
           "project": "dbdemos",
           "demo_bundle_job": "autoloader",
@@ -36,7 +36,11 @@
   "parameters": [
     {
       "name": "catalog",
-      "default": "jboyd_demos"
+      "default": "dbdemos_jade"
+    },
+    {
+      "name": "schema",
+      "default": "build"
     }
   ]
 }
