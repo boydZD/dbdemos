@@ -24,8 +24,8 @@ class JobBundler:
         return cluster_conf
 
     def load_bundles_conf(self):
-        if not self.staging_reseted:
-            self.reset_staging_repo()
+        # if not self.staging_reseted:
+        #     self.reset_staging_repo()
         print("scanning folder for bundles...")
         def find_conf_files(path, list, depth = 0):
             objects = self.db.get("2.0/workspace/list", {"path": path})["objects"]
@@ -54,8 +54,8 @@ class JobBundler:
             self.add_bundle(path)
 
     def add_bundle(self, bundle_path, config_path: str = "_resources/bundle_config"):
-        if not self.staging_reseted:
-            self.reset_staging_repo()
+        # if not self.staging_reseted:
+        #     self.reset_staging_repo()
         #Let's get the demo conf from the demo folder.
         config_path = self.conf.get_repo_path()+"/"+bundle_path+"/"+config_path
 
@@ -189,9 +189,10 @@ class JobBundler:
                 task = {
                     "task_key": f"bundle_{demo_conf.name}_{i}",
                     "notebook_task": {
-                        "notebook_path": demo_conf.path+"/"+notebook.path,
+                        #"notebook_path": demo_conf.path+"/"+notebook.path,
+                        "notebook_path": self.conf.get_repo_path()+"/"+demo_conf.path+"/"+notebook.path,
                         "base_parameters": {"reset_all_data": "true"},
-                        "source": "GIT"
+                        "source": "WORKSPACE"
                     },
                     "libraries": notebook.libraries,
                     "job_cluster_key": default_job_conf["job_clusters"][0]["job_cluster_key"],
