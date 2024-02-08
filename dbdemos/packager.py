@@ -104,14 +104,23 @@ class Packager:
             parser.remove_dbdemos_build()
             #parser.remove_static_settings()
             parser.hide_commands_and_results()
-            parser.add_ga_website_tracker()
+            #parser.add_ga_website_tracker()
             requires_global_setup = False
             if parser.contains("00-global-setup"):
                 parser.replace_in_notebook('(?:\.\.\/)*_resources\/00-global-setup', './00-global-setup', True)
                 requires_global_setup = True
+            # with open(full_path, "w") as f:
+            #     f.write(parser.get_html())
+
+            requires_global_storage_setup = False
+            if parser.contains("00-global-storage-setup"):
+                parser.replace_in_notebook('(?:\.\.\/)*_resources\/00-global-storage-setup', './00-global-storage-setup', True)
+                requires_global_storage_setup = True
+                
             with open(full_path, "w") as f:
                 f.write(parser.get_html())
-            return (requires_global_setup, parser.get_dashboard_ids())
+
+            return (requires_global_setup, requires_global_storage_setup, parser.get_dashboard_ids())
 
         with ThreadPoolExecutor(max_workers=3) as executor:
             executor.map(download_demo_data, demo_conf.datasets)
@@ -119,10 +128,13 @@ class Packager:
         dashboard_ids = []
         with ThreadPoolExecutor(max_workers=3) as executor:
             requires_global_setup = False
-            for r, ids in executor.map(download_notebook_html, demo_conf.notebooks):
+            requires_global_storage_setup = False
+            for r, s, ids in executor.map(download_notebook_html, demo_conf.notebooks):
                 dashboard_ids += ids
                 if r:
                     requires_global_setup = True
+                if s:
+                    requires_global_storage_setup = True
 
             #Add the global notebook if required
             # TODO: not ideal, it's a bit messy need to re-think that
@@ -135,6 +147,17 @@ class Packager:
                 html = base64.b64decode(file['content']).decode('utf-8')
                 with open(demo_conf.get_bundle_path() + "/" + init_notebook.path+".html", "w") as f:
                     f.write(html)
+
+            if requires_global_storage_setup:
+                init_storage_notebook = DemoNotebook("_resources/00-global-storage-setup", "Global storage init", "Global storage init")
+                demo_conf.add_notebook(init_storage_notebook)
+                file = self.db.get("2.0/workspace/export", {"path": self.jobBundler.conf.get_repo_path() +"/"+ init_storage_notebook.path, "format": "HTML", "direct_download": False})
+                if 'error_code' in file:
+                    raise Exception(f"Couldn't find file '{self.jobBundler.conf.get_repo_path()}/{init_storage_notebook.path}' in workspace. Check notebook path in bundle conf file. {file['error_code']} - {file['message']}")
+                html = base64.b64decode(file['content']).decode('utf-8')
+                with open(demo_conf.get_bundle_path() + "/" + init_storage_notebook.path+".html", "w") as f:
+                    f.write(html)
+
         return dashboard_ids
 
     def get_html_menu(self, path: str, title: str, description: str, notebook_link: str):

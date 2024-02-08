@@ -121,6 +121,17 @@ class Installer:
             except Exception as e:
                 print(f"WARN: couldn't get current username. This shouldn't happen - unpredictable behavior - 2 errors: {e2} - {e} - will return 'unknown'")
                 return "unknown"
+            
+    def get_clean_current_username(self):
+        current_user = self.get_current_username()
+
+        if current_user.rfind('@') > 0:
+            current_user_no_at = current_user[:current_user.rfind('@')]
+        else:
+            current_user_no_at = current_user
+
+        return re.sub(r'\W+', '_', current_user_no_at)
+
 
     def get_current_cloud(self):
         try:
@@ -199,9 +210,12 @@ class Installer:
         demo_conf = self.get_demo_conf(demo_name, catalog, schema, install_path+"/"+demo_name)
         if (schema is not  None or catalog is not None) and not demo_conf.custom_schema_supported:
             self.report.display_custom_schema_not_supported_error(Exception('Custom schema not supported'), demo_conf)
-        if (schema is not None and catalog is None) or (schema is None and catalog is not None):
-            self.report.display_custom_schema_missing_error(Exception('Catalog and Schema must both be defined.'), demo_conf)
-
+        if (schema is not None and catalog is None): #or (schema is None and catalog is not None):
+            self.report.display_custom_schema_missing_error(Exception('Catalog must be defined if Schema is defined.'), demo_conf)
+        if (schema is None and catalog is not None):
+            username_clean = self.get_clean_current_username()
+            schema = f'{username_clean}_{demo_name}'
+            
         self.report.display_install_info(demo_conf, install_path, catalog, schema)
         self.tracker.track_install(demo_conf.category, demo_name)
         use_cluster_id = self.current_cluster_id if use_current_cluster else None
@@ -400,15 +414,15 @@ class Installer:
         ds = self.get_demo_datasource()
         if ds is not None:
             return ds
-        def get_definition(serverless, name):
+        def get_definition(self, serverless, name):
+            tags = { "project": "dbdemos"}
+            tags = merge_dict(tags, self.get_tag_values_from_current_cluster(self.get_required_tags())["custom_tags"])
             return {
                 "name": name,
                 "cluster_size": "Small",
                 "min_num_clusters": 1,
                 "max_num_clusters": 1,
-                "tags": {
-                    "project": "dbdemos"
-                },
+                "tags": tags,
                 "spot_instance_policy": "COST_OPTIMIZED",
                 "warehouse_type": "PRO",
                 "enable_photon": "true",
@@ -416,9 +430,9 @@ class Installer:
                 "channel": { "name": "CHANNEL_NAME_CURRENT" }
             }
         def try_create_endpoint(serverless):
-            w = self.db.post("2.0/sql/warehouses", json=get_definition(serverless, endpoint_name))
+            w = self.db.post("2.0/sql/warehouses", json=get_definition(self, serverless, endpoint_name))
             if "message" in w and "already exists" in w['message']:
-                w = self.db.post("2.0/sql/warehouses", json=get_definition(serverless, endpoint_name+"-"+username))
+                w = self.db.post("2.0/sql/warehouses", json=get_definition(self, serverless, endpoint_name+"-"+username))
             if "id" in w:
                 return w
             if serverless:
@@ -459,18 +473,20 @@ class Installer:
         def load_notebook(notebook):
             return load_notebook_path(notebook, "bundles/"+demo_name+"/install_package/"+notebook.get_clean_path()+".html")
 
-        def load_notebook_path(notebook: DemoNotebook, template_path):
+        def load_notebook_path(notebook: DemoNotebook, template_path, boiler_plate_notebook: bool=False):
             parser = NotebookParser(self.get_resource(template_path))
-            if notebook.add_cluster_setup_cell and not use_current_cluster:
-                self.add_cluster_setup_cell(parser, demo_name, cluster_name, cluster_id, self.db.conf.workspace_url)
-            parser.replace_dashboard_links(dashboards)
-            parser.remove_automl_result_links()
-            parser.replace_schema(demo_conf)
-            parser.replace_dynamic_links_pipeline(pipeline_ids)
-            parser.replace_dynamic_links_repo(repos)
-            parser.remove_delete_cell()
-            parser.replace_dynamic_links_workflow(workflows)
-            parser.set_tracker_tag(self.get_org_id(), self.get_uid(), demo_conf.category, demo_name, notebook.get_clean_path())
+            # template/boilerplate notebooks for license, notice, readme do not need additional parsing
+            if not boiler_plate_notebook:
+                if notebook.add_cluster_setup_cell and not use_current_cluster:
+                    self.add_cluster_setup_cell(parser, demo_name, cluster_name, cluster_id, self.db.conf.workspace_url)
+                parser.replace_dashboard_links(dashboards)
+                parser.remove_automl_result_links()
+                parser.remove_delete_cell()
+                parser.replace_schema(demo_conf)
+                parser.replace_dynamic_links_pipeline(pipeline_ids)
+                parser.replace_dynamic_links_repo(repos)
+                parser.replace_dynamic_links_workflow(workflows)
+                #parser.set_tracker_tag(self.get_org_id(), self.get_uid(), demo_conf.category, demo_name, notebook.get_clean_path())
             content = parser.get_html()
             content = base64.b64encode(content.encode("utf-8")).decode("utf-8")
             parent = str(Path(install_path+"/"+notebook.get_clean_path()).parent)
@@ -494,7 +510,7 @@ class Installer:
                 DemoNotebook("_resources/README", "README", "Readme")
             ]
             def load_notebook_template(notebook):
-                load_notebook_path(notebook, f"template/{notebook.title}.html")
+                load_notebook_path(notebook, f"template/{notebook.title}.html", boiler_plate_notebook=True)
             collections.deque(executor.map(load_notebook_template, notebooks))
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             return [n for n in executor.map(load_notebook, demo_conf.notebooks)]
@@ -508,6 +524,7 @@ class Installer:
             #enforce demo tagging in the cluster
             for cluster in definition["clusters"]:
                 merge_dict(cluster, {"custom_tags": {"project": "dbdemos", "demo": demo_name, "demo_install_date": today}})
+                merge_dict(cluster, self.get_tag_values_from_current_cluster(self.get_required_tags()))
                 if self.db.conf.get_demo_pool() is not None:
                     cluster["instance_pool_id"] = self.db.conf.get_demo_pool()
                     if "node_type_id" in cluster: del cluster["node_type_id"]
@@ -565,10 +582,11 @@ class Installer:
         cluster_conf_cloud = json.loads(conf_template.replace_template_key(cluster_conf_cloud))
         merge_dict(cluster_conf, cluster_conf_cloud)
         merge_dict(cluster_conf, demo_conf.cluster)
+        merge_dict(cluster_conf, self.get_tag_values_from_current_cluster(self.get_required_tags()))
 
         if "driver_node_type_id" in cluster_conf:
             if cloud not in cluster_conf["driver_node_type_id"] or cloud not in cluster_conf["node_type_id"]:
-                raise Exception(f"""ERROR CREATING CLUSTER FOR DEMO {demo_name}. You need to speficy the cloud type for all clouds:  "node_type_id": {"AWS": "g5.4xlarge", "AZURE": "Standard_NC8as_T4_v3", "GCP": "a2-highgpu-1g"} and "driver_node_type_id" """)
+                raise Exception(f"""ERROR CREATING CLUSTER FOR DEMO {demo_name}. You need to specify the cloud type for all clouds:  "node_type_id": {"AWS": "g5.4xlarge", "AZURE": "Standard_NC8as_T4_v3", "GCP": "a2-highgpu-1g"} and "driver_node_type_id" """)
             cluster_conf["node_type_id"] = cluster_conf["node_type_id"][cloud]
             cluster_conf["driver_node_type_id"] = cluster_conf["driver_node_type_id"][cloud]
 
@@ -676,3 +694,19 @@ class Installer:
         match = re.search(r'__DATABRICKS_NOTEBOOK_MODEL = \'(.*?)\'', html)
         raw_content = match.group(1)
         return raw_content, base64.b64decode(raw_content).decode('utf-8')
+    
+    def get_required_tags(self):
+        required_tags = json.loads(self.get_resource("resources/required_custom_tags.json"))
+        return required_tags
+    
+    def get_tag_values_from_current_cluster(self,tags):
+        from pyspark.sql import SparkSession
+        spark = SparkSession.getActiveSession()
+        cluster_tags = dict(sub.values() for sub in json.loads(spark.conf.get('spark.databricks.clusterUsageTags.clusterAllTags')))
+        required_tags = self.get_required_tags()
+        for key in cluster_tags:
+            if key in required_tags['custom_tags']:
+                required_tags['custom_tags'][key] = cluster_tags[key]
+            else:
+                pass
+        return required_tags

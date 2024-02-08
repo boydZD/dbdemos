@@ -90,7 +90,9 @@ class NotebookParser:
     def replace_schema(self, demo_conf: DemoConf):
         self.replace_in_notebook(f'catalog = \\"main__build\\"', f'catalog = \\"main\\"')
         if demo_conf.custom_schema_supported:
-            self.replace_in_notebook("\$catalog=[0-9a-z_]*\s{1,3}\$schema=[0-9a-z_]*", f"$catalog={demo_conf.catalog} $schema={demo_conf.schema}", True)
+            self.replace_in_notebook('''\$catalog="[0-9a-z_]*"\s{1,3}\$schema="[0-9a-z_]*"''', f"$catalog={demo_conf.catalog} $schema={demo_conf.schema}", True)
+            self.replace_in_notebook(f'''$catalog=\\"{demo_conf.default_catalog}\\"''', f'''$catalog=\\"{demo_conf.catalog}\\"''', False)
+            self.replace_in_notebook(f'''$schema=\\"{demo_conf.default_schema}\\"''', f'''$schema=\\"{demo_conf.schema}\\"''', False)
             self.replace_in_notebook("\$catalog=[0-9a-z_]*\s{1,3}\$db=[0-9a-z_]*", f"$catalog={demo_conf.catalog} $db={demo_conf.schema}", True)
             self.replace_in_notebook(f"{demo_conf.default_catalog}.{demo_conf.default_schema}", f"{demo_conf.catalog}.{demo_conf.schema}")
             self.replace_in_notebook(f'dbutils.widgets.text(\\"catalog\\", \\"{demo_conf.default_catalog}\\"', f'dbutils.widgets.text(\\"catalog\\", \\"{demo_conf.catalog}\\"')

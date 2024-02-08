@@ -178,7 +178,7 @@ class InstallerReport:
 
     def display_install_info(self, demo_conf: DemoConf, install_path, catalog: str, schema: str):
         print(f"Installing demo {demo_conf.name} under {install_path}, please wait...")
-        print(f"""Help us improving dbdemos, share your feedback or create an issue if something isn't working: https://github.com/databricks-demos/dbdemos""")
+        #print(f"""Help us improving dbdemos, share your feedback or create an issue if something isn't working: https://github.com/databricks-demos/dbdemos""")
         info = ""
         if demo_conf.custom_schema_supported:
             if catalog is None:
