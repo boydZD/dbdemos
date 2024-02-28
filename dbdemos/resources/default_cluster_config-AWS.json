@@ -1,5 +1,5 @@
 {
-  "node_type_id": "i3.xlarge",
+  "node_type_id": "m5dn.xlarge",
   "aws_attributes": {
     "first_on_demand": 1,
     "availability": "SPOT_WITH_FALLBACK",

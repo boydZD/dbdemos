@@ -3,7 +3,14 @@
   "runtime_engine": "STANDARD",
   "spark_version": "14.3.x-cpu-ml-scala2.12",
   "spark_conf": {
-    "spark.databricks.dataLineage.enabled": "true"
+    "spark.databricks.dataLineage.enabled": "true",
+    "spark.databricks.driver.preferredMavenCentralMirrorUrl": "https://artifacts-read.gkp.jpmchase.net/artifactory/maven/",
+    "spark.databricks.driver.disableSparkPackagesResolver": "true",
+    "spark.databricks.driver.disableDefaultMavenCentralResolver": "true",
+    "spark.databricks.safespark.externalUDF.plan.limit": 20
+  },
+  "spark_env_vars": {
+    "PIP_INDEX_URL": "https://artifacts-read.gkp.jpmchase.net/artifactory/api/pypi/pypi/simple"
   },
   "custom_tags": {
     "project": "dbdemos",

@@ -10,6 +10,7 @@ setup(
     setup_requires=["wheel"],
     include_package_data=True,
     package_data={"": ["*.txt","*.csv"]},
-    install_requires=["requests", "dbsqlclone", "pandas"],
+    #install_requires=["requests", "dbsqlclone", "pandas"],
+    install_requires=["requests", "pandas"],
     license_files = ('LICENSE',)
 )

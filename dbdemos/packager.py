@@ -53,8 +53,8 @@ class Packager:
             with open(f"{dashboard_path}/{id}{Packager.DASHBOARD_IMPORT_API}.json", "w") as f:
                 f.write(dashboard)
             #LEGACY IMPORT/EXPORT
-            from dbsqlclone.utils import dump_dashboard
-            from dbsqlclone.utils.client import Client
+            from .dbsqlclone.utils import dump_dashboard
+            from .dbsqlclone.utils.client import Client
             client = Client(self.db.conf.workspace_url, self.db.conf.pat_token)
             dashboard = dump_dashboard.get_dashboard_definition_by_id(client, id)
             dashboard = cleanup_names_import_bug(dashboard)
@@ -85,7 +85,7 @@ class Packager:
             Path(full_path[:full_path.rindex("/")]).mkdir(parents=True, exist_ok=True)
             if not notebook.pre_run:
                 repo_path = self.jobBundler.conf.get_repo_path()+"/"+demo_conf.path+"/"+notebook.path
-                repo_path = os.path.realpath(repo_path)
+                #repo_path = os.path.realpath(repo_path)
                 file = self.db.get("2.0/workspace/export", {"path": repo_path, "format": "HTML", "direct_download": False})
                 if 'error_code' in file:
                     raise Exception(f"Couldn't find file {repo_path} in workspace. Check notebook path in bundle conf file. {file['error_code']} - {file['message']}")

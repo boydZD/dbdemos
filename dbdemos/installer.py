@@ -1,7 +1,7 @@
 import collections
 
 import pkg_resources
-from dbsqlclone.utils.load_dashboard import DashboardWidgetException
+from .dbsqlclone.utils.load_dashboard import DashboardWidgetException
 
 from dbdemos.packager import Packager
 
@@ -273,8 +273,8 @@ class Installer:
 
         if debug:
             print(f"     Installing dashboard {dashboard_name} - {id}...")
-        from dbsqlclone.utils import dump_dashboard
-        from dbsqlclone.utils.client import Client
+        from .dbsqlclone.utils import dump_dashboard
+        from .dbsqlclone.utils.client import Client
         client = Client(self.db.conf.workspace_url, self.db.conf.pat_token)
         existing_dashboard = self.get_dashboard_by_name(dashboard_name)
         if existing_dashboard is not None:
@@ -302,8 +302,8 @@ class Installer:
             raise Exception(f"ERROR: couldn't find dashboard folder {path}. Do you have permission?")
 
         # ------- LEGACY IMPORT/EXPORT DASHBOARD - TO BE REPLACED ONCE IMPORT/EXPORT API IS PUBLIC PREVIEW
-        from dbsqlclone.utils.client import Client
-        from dbsqlclone.utils import load_dashboard, clone_dashboard
+        from .dbsqlclone.utils.client import Client
+        from .dbsqlclone.utils import load_dashboard, clone_dashboard
         client = Client(self.db.conf.workspace_url, self.db.conf.pat_token, permissions= [
             {"user_name": self.db.conf.username, "permission_level": "CAN_MANAGE"},
             {"group_name": "users", "permission_level": "CAN_EDIT"}

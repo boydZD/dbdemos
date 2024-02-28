@@ -1,4 +1,4 @@
-from dbsqlclone.utils.load_dashboard import DashboardWidgetException
+from .dbsqlclone.utils.load_dashboard import DashboardWidgetException
 
 from .conf import DBClient, DemoConf, Conf, ConfTemplate, merge_dict, DemoNotebook
 from .exceptions.dbdemos_exception import ClusterCreationException, ExistingResourceException, FolderDeletionException, \

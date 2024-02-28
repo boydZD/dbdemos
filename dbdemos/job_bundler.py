@@ -191,7 +191,8 @@ class JobBundler:
                     "notebook_task": {
                         #"notebook_path": demo_conf.path+"/"+notebook.path,
                         "notebook_path": self.conf.get_repo_path()+"/"+demo_conf.path+"/"+notebook.path,
-                        "base_parameters": {"reset_all_data": "true"},
+                        #"base_parameters": {"reset_all_data": "true"},
+                        "base_parameters": {},
                         "source": "WORKSPACE"
                     },
                     "libraries": notebook.libraries,

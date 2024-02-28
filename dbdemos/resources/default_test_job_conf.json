@@ -1,5 +1,5 @@
 {
-  "name": "field-demos_{{DEMO_NAME}}",
+  "name": "dbdemos_build_{{DEMO_NAME}}",
   "email_notifications": {
     "no_alert_for_skipped_runs": false
   },
@@ -9,21 +9,30 @@
   ],
   "job_clusters": [
     {
-      "job_cluster_key": "field_demo_test",
+      "job_cluster_key": "dbdemo_build",
       "new_cluster": {
+        "node_type_id": "m5dn.2xlarge",
         "spark_version": "14.3.x-cpu-ml-scala2.12",
         "custom_tags": {
           "project": "dbdemos",
-          "demo_bundle_job": "autoloader",
-          "demo": "autoloader"
+          "purpose": "demo bundle job",
+          "Environment": "dev",
+          "SealId": "110586",
+          "dev.res.obo.id": "110586"
         },
         "spark_conf": {
-          "spark.databricks.dataLineage.enabled": "true"
+          "spark.databricks.dataLineage.enabled": "true",
+          "spark.databricks.driver.preferredMavenCentralMirrorUrl": "https://artifacts-read.gkp.jpmchase.net/artifactory/maven/",
+          "spark.databricks.driver.disableSparkPackagesResolver": "true",
+          "spark.databricks.driver.disableDefaultMavenCentralResolver": "true",
+          "spark.databricks.safespark.externalUDF.plan.limit": 20
         },
-        "instance_pool_id": "0117-155010-pates171-pool-cn3zn09e",
+        "spark_env_vars": {
+          "PIP_INDEX_URL": "https://artifacts-read.gkp.jpmchase.net/artifactory/api/pypi/pypi/simple"
+        },
         "data_security_mode": "SINGLE_USER",
         "runtime_engine": "STANDARD",
-        "num_workers": 1
+        "num_workers": 3
       }
     }
   ],
@@ -31,11 +40,11 @@
   "parameters": [
     {
       "name": "catalog",
-      "default": "dbdemos_jade"
+      "default": "110586_ml-appspace_ctg_dev"
     },
     {
       "name": "schema",
-      "default": "build"
+      "default": "dbdemos_build_{{DEMO_NAME}}"
     }
   ]
 }
