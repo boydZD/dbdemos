@@ -13,6 +13,7 @@
       "new_cluster": {
         "node_type_id": "m5dn.2xlarge",
         "spark_version": "14.3.x-cpu-ml-scala2.12",
+        "policy_id": "0016B30C5EF3B086",
         "custom_tags": {
           "project": "dbdemos",
           "purpose": "demo bundle job",
@@ -40,7 +41,7 @@
   "parameters": [
     {
       "name": "catalog",
-      "default": "110586_ml-appspace_ctg_dev"
+      "default": "110586_ctg_beta"
     },
     {
       "name": "schema",

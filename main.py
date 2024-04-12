@@ -1,20 +1,44 @@
-import json
+import json, os
 from dbdemos.conf import Conf, DemoConf
 from dbdemos.installer import Installer
 from dbdemos.job_bundler import JobBundler
 from dbdemos.packager import Packager
 import traceback
 
-with open("./local_conf.json", "r") as r:
-    c = json.loads(r.read())
+#jules build
+if os.environ.get('JULES_BUILD') is not None:
+    url = os.environ.get('')
+    username = os.environ.get('')
+    pat_token = os.environ.get('')
+    repo_staging_path = os.environ.get('WORKSPACE_STAGING_PATH')
+    repo_name = os.environ.get('WORKSPACE_FOLDER')
+    repo_url = ""
+    branch = ""
+    org_id = ""
+
+#local build
+else:
+    with open("./local_conf.json", "r") as r:
+        c = json.loads(r.read())
+
+    username = c['username']
+    url = c['url']
+    org_id = c['org_id']
+    pat_token = c['pat_token']
+    repo_staging_path = c['repo_staging_path']
+    repo_name = c['repo_name']
+    repo_url = c['repo_url']
+    branch = c['branch']
+    
 with open("./dbdemos/resources/default_cluster_config.json", "r") as cc:
     default_cluster_template = cc.read()
+
 with open("./dbdemos/resources/default_test_job_conf.json", "r") as cc:
     default_cluster_job_template = cc.read()
 
-conf = Conf(c['username'], c['url'], c['org_id'], c['pat_token'],
+conf = Conf(username, url, org_id, pat_token,
             default_cluster_template, default_cluster_job_template,
-            c['repo_staging_path'], c['repo_name'], c['repo_url'], c['branch'])
+            repo_staging_path, repo_name, repo_url, branch)
 
 from dbdemos.dbsqlclone.utils import load_dashboard
 import logging
@@ -28,9 +52,9 @@ def bundle():
     bundler.add_bundle("product_demos/Auto-Loader (cloudFiles)")
     bundler.add_bundle("product_demos/Delta-Lake-CDC-CDF")
     bundler.add_bundle("product_demos/Delta-Lake")
-    bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-CDC")
+    #bundler.add_bundle("product_demos/Delta-Live-Table/Delta-Live-Table-CDC")
     #bundler.add_bundle("demo-retail/lakehouse-retail-c360")
-    bundler.add_bundle("product_demos/Data-Science/mlops-end2end")
+    #bundler.add_bundle("product_demos/Data-Science/mlops-end2end")
 
 
     # Run the jobs (only if there is a new commit since the last time, or failure, or force execution)

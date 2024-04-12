@@ -25,7 +25,8 @@ def delete_dashboard(client: Client, tags=[], ids_to_skip={}):
     for d in get_all_dashboards(client, tags):
         if d['id'] not in ids_to_skip:
             logger.debug(f"deleting dashboard {d['id']} - {d['name']}")
-            with requests.delete(client.url+"/api/2.0/preview/sql/dashboards/"+d["id"], headers = client.headers, timeout=120) as r:
+            #with requests.delete(client.url+"/api/2.0/preview/sql/dashboards/"+d["id"], headers = client.headers, timeout=120) as r:
+            with requests.delete(client.url+"/api/2.0/lakeview/dashboards/"+d["id"], headers = client.headers, timeout=120) as r:
                 r.json()
 
 def delete_queries(client: Client, tags=[], ids_to_skip={}):

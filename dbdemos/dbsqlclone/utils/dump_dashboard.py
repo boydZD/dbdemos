@@ -26,7 +26,8 @@ def dump_dashboard(source_client: Client, dashboard_id, folder_prefix="./dashboa
 def get_dashboard_definition_by_id(source_client: Client, dashboard_id):
     logger.debug(f"getting dashboard definition from {dashboard_id}...")
     result = {"queries": [], "id": dashboard_id}
-    dashboard = requests.get(source_client.url+"/api/2.0/preview/sql/dashboards/"+dashboard_id, headers = source_client.headers).json()
+    #dashboard = requests.get(source_client.url+"/api/2.0/preview/sql/dashboards/"+dashboard_id, headers = source_client.headers).json()
+    dashboard = requests.get(source_client.url+"/api/2.0/lakeview/dashboards/"+dashboard_id, headers = source_client.headers).json()
     result["dashboard"] = dashboard
     query_ids = list()
     param_query_ids = set()

@@ -245,10 +245,12 @@ def duplicate_dashboard(client: Client, dashboard, dashboard_state, parent):
 
     new_dashboard = None
     if "new_id" in dashboard_state:
+        #with requests.get(client.url+"/api/2.0/preview/sql/dashboards/"+dashboard_state["new_id"], headers = client.headers) as r:
         with requests.get(client.url+"/api/2.0/preview/sql/dashboards/"+dashboard_state["new_id"], headers = client.headers) as r:
             existing_dashboard = r.json()
         if "options" in existing_dashboard and "moved_to_trash_at" not in existing_dashboard["options"]:
             logger.debug("  dashboard exists, updating it")
+            #with requests.post(client.url+"/api/2.0/preview/sql/dashboards/"+dashboard_state["new_id"], headers = client.headers, json=data) as r:
             with requests.post(client.url+"/api/2.0/preview/sql/dashboards/"+dashboard_state["new_id"], headers = client.headers, json=data) as r:
                 new_dashboard = r.json()
             if "widgets" not in new_dashboard:
@@ -257,19 +259,21 @@ def duplicate_dashboard(client: Client, dashboard, dashboard_state, parent):
                 #Drop all the widgets and re-create them
                 for widget in new_dashboard["widgets"]:
                     logger.debug(f"    deleting widget {widget['id']} from existing dashboard {new_dashboard['id']}")
+                    #with requests.delete(client.url+"/api/2.0/preview/sql/widgets/"+widget['id'], headers = client.headers) as r:
                     with requests.delete(client.url+"/api/2.0/preview/sql/widgets/"+widget['id'], headers = client.headers) as r:
                         r.json()
         else:
             logger.debug("    couldn't find the dashboard defined in the state, it probably has been deleted.")
     if new_dashboard is None:
         logger.debug(f"  creating new dashboard...")
+        #with requests.post(client.url+"/api/2.0/preview/sql/dashboards", headers = client.headers, json=data) as r:
         with requests.post(client.url+"/api/2.0/preview/sql/dashboards", headers = client.headers, json=data) as r:
             new_dashboard = r.json()
         dashboard_state["new_id"] = new_dashboard["id"]
-    if client.permisions_defined():
-        with requests.post(client.url+"/api/2.0/preview/sql/permissions/dashboards/"+new_dashboard["id"], headers = client.headers, json=client.permissions) as r:
-            permissions = r.json()
-        logger.debug(f"     Dashboard permissions set to {permissions}")
+    # if client.permisions_defined():
+    #     with requests.post(client.url+"/api/2.0/preview/sql/permissions/dashboards/"+new_dashboard["id"], headers = client.headers, json=client.permissions) as r:
+    #         permissions = r.json()
+    #     logger.debug(f"     Dashboard permissions set to {permissions}")
 
     def load_widget(widget):
         logger.debug(f"          cloning widget {widget}...")
